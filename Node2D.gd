@@ -1,9 +1,14 @@
 extends Node2D
 
 var screen_size
-const X0 = 0 #Donde empieza
+const X0 = 0.0 #Donde empieza
 const Y0 = 300.0 #Donde empieza
 const PorDondeVuelve = 1 #-1 para qe vuelva por abajo
+
+const hmax = 300.0 #Parametros parabola
+const xhmax = 500.0
+const xcayo = 1000.0
+const Radio = 300.0
 
 var dx = 1 #Para qe lado avanza
 
@@ -20,7 +25,12 @@ func _ready():
 	position.x = X0
 	position.y = Y0
 
-func _process(delta):
+func distancia():
+	var xc = X0 + (xcayo-X0)/2.0
+	var d = pow(pow(position.x - xc, 2.0) + pow(position.y - Y0, 2.0), 0.5)
+	return d
+
+func _process_parabola(delta):
 # En general le sumo uno a x, le sumo f'(x) a y
 # Para una linea:
 # y = f(x) = mx+b => f'(x) = m
@@ -28,9 +38,6 @@ func _process(delta):
 # y = f(x) = ax^2 + bx + c => f'(x) = 2ax + b
 # Para calcular a y b, despejamos b en funcion de a. Y despues despejamos a "a" sabiendo valores qe qeriamos qe de
 # (El punto maximo y los ceros)
-	var hmax = 300.0
-	var xhmax = 500.0
-	var xcayo = 1000.0
 	var a = aparabola(hmax, xhmax, xcayo) #OJO, qe si no tienen decimales, redondea
 	var b = bparabola(a, xcayo)
 	#print(position.x)
@@ -45,3 +52,22 @@ func _process(delta):
 			position.y += PorDondeVuelve * ((2 * a * position.x) + b)
 		else:
 			dx = 1 #Volvi al inicio
+
+func _process_circulo(delta):
+	var xc = X0 + (2 * Radio - X0)/2.0
+	position.x += dx
+	if dx == 1:
+		if position.x <= X0 + 2 * Radio:
+			position.y = Y0 + sqrt(pow(Radio, 2) - pow(position.x - xc, 2))
+		else:
+			dx = -1
+	if dx == -1:
+		if position.x > X0:
+			position.y = Y0 - sqrt(pow(Radio, 2) - pow(position.x - xc, 2))
+		else:
+			dx = 1
+
+func _process(delta):
+	# _process_parabola(delta)
+	_process_circulo(delta)
+	$Label.text = str(distancia())
