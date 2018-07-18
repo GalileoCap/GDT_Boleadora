@@ -1,8 +1,11 @@
 extends Node2D
 
 var screen_size
-var X0 = 0
-var Y0 = 300.0
+const X0 = 0 #Donde empieza
+const Y0 = 300.0 #Donde empieza
+const PorDondeVuelve = 1 #-1 para qe vuelva por abajo
+
+var dx = 1 #Para qe lado avanza
 
 func aparabola(hmax, xhmax, xcayo):
 	var r = hmax/(xhmax*xhmax - xhmax * xcayo)
@@ -12,7 +15,6 @@ func bparabola(aparabola, xcayo):
 	return(-aparabola * xcayo)
 
 func _ready():
-	screen_size = get_viewport_rect().size
   #  pad_size = get_node("left").get_texture().get_size()
 	print(screen_size)
 	position.x = X0
@@ -32,9 +34,14 @@ func _process(delta):
 	var a = aparabola(hmax, xhmax, xcayo) #OJO, qe si no tienen decimales, redondea
 	var b = bparabola(a, xcayo)
 	#print(position.x)
-	if position.y <= Y0:
-		position.x += 1
-		position.y -= (2 * a * position.x) + b
-	if position.y > Y0:
-		position.x += -1
-		position.y += -1 * ((2 * a * position.x) + b)
+	position.x += dx
+	if dx == 1: #Voy de izqierda a derecha
+		if position.x <= xcayo:
+			position.y -= (2 * a * position.x) + b
+		else:
+			dx = -1 #Llege al final, empiezo a volver
+	if dx == -1: #Voy de derecha a izqierda
+		if position.x > X0:
+			position.y += PorDondeVuelve * ((2 * a * position.x) + b)
+		else:
+			dx = 1 #Volvi al inicio
