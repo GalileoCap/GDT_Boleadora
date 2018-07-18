@@ -1,7 +1,7 @@
 extends Node2D
 
 var screen_size
-const X0 = 0.0 #Donde empieza
+const X0 = 100.0 #Donde empieza
 const Y0 = 300.0 #Donde empieza
 const PorDondeVuelve = 1 #-1 para qe vuelva por abajo
 
@@ -26,7 +26,7 @@ func _ready():
 	position.y = Y0
 
 func distancia():
-	var xc = X0 + (xcayo-X0)/2.0
+	var xc = X0 + (2 * Radio - X0)/2.0
 	var d = pow(pow(position.x - xc, 2.0) + pow(position.y - Y0, 2.0), 0.5)
 	return d
 
@@ -54,16 +54,16 @@ func _process_parabola(delta):
 			dx = 1 #Volvi al inicio
 
 func _process_circulo(delta):
-	var xc = X0 + (2 * Radio - X0)/2.0
-	position.x += dx
-	if dx == 1:
-		if position.x <= X0 + 2 * Radio:
-			position.y = Y0 + sqrt(pow(Radio, 2) - pow(position.x - xc, 2))
+	var xc = X0 + ((2.0 * Radio + X0) - X0)/2.0
+	position.x += dx * 0.5
+	if dx > 0:
+		if position.x <= (X0 + (2.0 * Radio)):
+			position.y = Y0 + sqrt(pow(Radio, 2.0) - pow(position.x - xc, 2.0))
 		else:
 			dx = -1
-	if dx == -1:
-		if position.x > X0:
-			position.y = Y0 - sqrt(pow(Radio, 2) - pow(position.x - xc, 2))
+	if dx < 0:
+		if position.x >= X0:
+			position.y = Y0 - sqrt(pow(Radio, 2.0) - pow(position.x - xc, 2.0))
 		else:
 			dx = 1
 
@@ -71,3 +71,4 @@ func _process(delta):
 	# _process_parabola(delta)
 	_process_circulo(delta)
 	$Label.text = str(distancia())
+	print(position.x, position.y)
