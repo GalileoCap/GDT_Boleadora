@@ -11,6 +11,8 @@ const xcayo = 1000.0
 const Radio = 300.0
 
 var dx = 1 #Para qe lado avanza
+var xant
+var yant
 
 func aparabola(hmax, xhmax, xcayo):
 	var r = hmax/(xhmax*xhmax - xhmax * xcayo)
@@ -68,7 +70,17 @@ func _process_circulo(delta):
 			dx = 1
 
 func _process(delta):
+	xant = position.x
+	yant = position.y #A: Me guarde para derivar numericamente
 	# _process_parabola(delta)
 	_process_circulo(delta)
 	$Label.text = str(distancia())
-	print(position.x, position.y)
+	#A: _process_circulo cambio la posicion y calculo la derivada
+	var dx = position.x - xant
+	var dy = position.y - yant
+	var yp = dy / dx
+	print(position.x, "\t", dy, "\t", yp)
+
+	var flecha = get_node("../Flecha")
+	flecha.position.x = position.x
+	flecha.position.y = position.y
