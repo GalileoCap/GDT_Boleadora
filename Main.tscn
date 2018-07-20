@@ -9,4 +9,6 @@
 
 [node name="Flecha" parent="." index="1" instance=ExtResource( 2 )]
 
+_sections_unfolded = [ "Transform" ]
+
 

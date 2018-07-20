@@ -79,8 +79,11 @@ func _process(delta):
 	var dx = position.x - xant
 	var dy = position.y - yant
 	var yp = dy / dx
-	print(position.x, "\t", dy, "\t", yp)
 
 	var flecha = get_node("../Flecha")
 	flecha.position.x = position.x
 	flecha.position.y = position.y
+	var hip = sqrt(pow(dy, 2) + pow(dx, 2))
+	var rot = atan2(dy, dx)
+	flecha.rotation = rot
+	flecha.scale = Vector2(hip, 1)
